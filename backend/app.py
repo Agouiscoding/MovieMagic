@@ -12,8 +12,13 @@ def create_app():
         return jsonify({"message": "Hello from Flask!"})
 
     # 注册搜索蓝图
+    # 注册搜索和发现蓝图（只注册一次）
     from routes.search_proxy import bp as search_bp
+    from routes.discovery_proxy import bp as discover_bp
+
     app.register_blueprint(search_bp)
+    app.register_blueprint(discover_bp)
+
 
     return app
 

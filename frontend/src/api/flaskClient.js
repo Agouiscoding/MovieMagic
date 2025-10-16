@@ -91,6 +91,52 @@ export function searchTV(opts) {
   return searchMedia({ ...opts, type: 'tv' });
 }
 
+
+// Add this function to your existing flaskClient.js
+
+/**
+ * Discover media by filters (no keyword).
+ * Automatically maps 'year' depending on media type:
+ *  - movie → year
+ *  - tv    → first_air_date_year
+ */
+// In frontend/src/api/flaskClient.js
+export function discoverMedia({
+  type = 'movie',
+  page = 1,
+  language = 'en-US',
+  region = 'US',
+  include_adult = 'false',
+  genres = [],
+  sortBy = 'popularity.desc',
+  year,
+  fromDate,
+  toDate,
+  signal,
+} = {}) {
+  const params = {
+    type,
+    page,
+    language,
+    region,
+    include_adult,
+    sort_by: sortBy,
+  };
+
+  if (genres.length) params.with_genres = genres.join(',');
+  if (year) {
+    if (type === 'movie') params.year = year;
+    else params.first_air_date_year = year;
+  }
+  if (fromDate) params.fromDate = fromDate;
+  if (toDate) params.toDate = toDate;
+
+  return request('/discover', { params, signal });
+}
+
+
+
+
 /* ------------------------ Future API placeholders ------------------------ */
 
 // Trending media (/api/trending)
