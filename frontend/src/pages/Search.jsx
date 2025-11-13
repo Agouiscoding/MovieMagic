@@ -125,10 +125,13 @@
 import { useEffect, useRef, useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import MovieCard from '../components/MovieCard';
+import { useAuth } from '../auth/AuthProvider.jsx';
+import { addFavorite } from '../api/flaskClient.js';
 import FiltersBar from '../components/FiltersBar';
 import { discoverMedia, searchMedia } from '../api/flaskClient';
 
 export default function Search() {
+  const { user, idToken } = useAuth();
   // 'movie' | 'tv'
   const [type, setType] = useState('movie');
 
@@ -247,7 +250,23 @@ export default function Search() {
       {/* Results grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, 200px)', gap: 16 }}>
         {data.results?.map((it) => (
-          <MovieCard key={`${type}-${it.id}`} item={it} type={type} />
+          <div key={`${type}-${it.id}`}>
+            <MovieCard item={it} type={type} />
+            {user && (
+              <button
+                style={{ marginTop: 6 }}
+                onClick={() => addFavorite({
+                  media_type: type,
+                  tmdb_id: it.id,
+                  title: type === 'movie' ? it.title : it.name,
+                  poster_path: it.poster_path,
+                  idToken,
+                })}
+              >
+                Save Favorite
+              </button>
+            )}
+          </div>
         ))}
       </div>
 

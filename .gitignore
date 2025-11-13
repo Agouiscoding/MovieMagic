@@ -1,9 +1,11 @@
 # Python
 backend/.venv/
-backend/__pycache__/
-backend/*.pyc
+**/__pycache__/
+*.pyc
 backend/app.db
 backend/.env
+backend/credential.json
+credential.json
 
 # Node
 frontend/node_modules/

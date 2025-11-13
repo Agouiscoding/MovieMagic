@@ -169,3 +169,25 @@ export function removeFavorite({ media_type, tmdb_id, idToken }) {
     idToken,
   });
 }
+
+/* ------------------------- Profile & Alerts API ------------------------- */
+
+export function bootstrapUser({ idToken } = {}) {
+  return request('/user/bootstrap', { method: 'POST', idToken });
+}
+
+export function getProfile({ idToken } = {}) {
+  return request('/profile', { idToken });
+}
+
+export function updateProfile({ display_name, photo_url, idToken }) {
+  return request('/profile', { method: 'PUT', body: { display_name, photo_url }, idToken });
+}
+
+export function getAlerts({ idToken } = {}) {
+  return request('/alerts', { idToken });
+}
+
+export function updateAlerts({ frequency, keywords, channels, idToken }) {
+  return request('/alerts', { method: 'PUT', body: { frequency, keywords, channels }, idToken });
+}
