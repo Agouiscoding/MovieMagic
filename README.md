@@ -168,6 +168,58 @@ GET /api/discover?type=movie&with_genres=28,12
 
 ---
 
+---
+
+## 🔐 User Accounts (Firebase) / 用户账号功能
+
+本项目已集成 Firebase 登录（前端）+ Firebase Admin 验证（后端）+ SQLite 持久化业务数据（收藏/提醒/资料）。
+
+### 启动步骤（账号功能）
+- 后端环境变量（编辑 `backend/.env`）
+  - `TMDB_API_KEY=你的TMDB密钥`
+  - `FIREBASE_PROJECT_ID=你的-firebase-project-id`
+  - `GOOGLE_APPLICATION_CREDENTIALS=C:\\绝对路径\\到\\service-account.json`
+  - 提示：`GOOGLE_APPLICATION_CREDENTIALS` 是下载的服务账号JSON文件，可用相对路径，但相对“启动后端时的工作目录”。
+- 前端环境变量（编辑 `frontend/.env`）
+  - `VITE_FIREBASE_API_KEY=...`
+  - `VITE_FIREBASE_AUTH_DOMAIN=...`
+  - `VITE_FIREBASE_PROJECT_ID=...`
+  - `VITE_FIREBASE_APP_ID=...`
+- 运行
+  - 后端：`python backend/app.py`（端口 5000）
+  - 前端：在 `frontend` 目录执行 `npm run dev`（端口 5173）
+  - 浏览器打开 `http://localhost:5173` → 导航进入 Login / Profile / Favorites / Alerts
+
+### 新增后端路由（均需 Bearer Token）
+- `POST /api/user/bootstrap`：首次调用确保用户行存在
+- `GET /api/profile` / `PUT /api/profile`：读取/更新资料（display_name, photo_url）
+- `GET /api/alerts` / `PUT /api/alerts`：读取/更新提醒偏好（daily/weekly/monthly, keywords, channels）
+- `GET /api/favorites` / `POST /api/favorites` / `DELETE /api/favorites/:media_type/:tmdb_id`：收藏列表/新增/删除
+
+### 关键文件
+- 后端
+  - `backend/app.py`：加载 `backend/.env`，注册蓝图，初始化数据库
+  - `backend/auth.py`：Firebase Admin 初始化与 `require_auth`（验证 ID Token 并 upsert 用户）
+  - `backend/db.py`：SQLite 引擎/会话，`init_db()` 建表
+  - `backend/models.py`：`User`、`Favorite`、`AlertPreference` 模型
+  - `backend/routes/user.py`：用户相关 API 路由
+- 前端
+  - `frontend/src/firebase.js`：Firebase Web SDK 初始化
+  - `frontend/src/auth/AuthProvider.jsx`：提供 `useAuth()`（user/idToken/login/logout/register）
+  - `frontend/src/api/flaskClient.js`：封装 API；在请求头附加 `Authorization: Bearer <idToken>`
+  - 页面：`frontend/src/pages/Login.jsx`、`Profile.jsx`、`Alerts.jsx`、`Favorites.jsx`
+  - 路由：`frontend/src/router.jsx`（导航与登录显示）
+
+### 常见问题
+- `TMDB_API_KEY missing`
+  - 确认在 `backend/.env` 设置了 TMDB_API_KEY，或在 PowerShell 中使用 `$Env:TMDB_API_KEY = '...'`，并重启后端
+- 点击 Favorites 报 `Invalid token: A project ID is required...`
+  - 在 `backend/.env` 设置 `FIREBASE_PROJECT_ID` 与 `GOOGLE_APPLICATION_CREDENTIALS`（服务账号 JSON）
+  - 前后端需使用同一 Firebase 项目（前端 `.env` 的 projectId 与后端一致）
+
+
+---
+
 ## 🧩 Environment Variables / 环境变量
 
 | Variable                     | Description / 说明 | Example                            |
