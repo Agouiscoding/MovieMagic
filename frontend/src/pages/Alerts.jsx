@@ -33,7 +33,7 @@ export default function Alerts() {
   if (!user) return <div style={{ padding: 24 }}>Please login first.</div>;
 
   return (
-    <div style={{ padding: 24, maxWidth: 500 }}>
+    <div className="container" style={{ padding: 24, maxWidth: 500 }}>
       <h2>Alert Preferences</h2>
       {err && <p style={{ color: 'red' }}>{err}</p>}
       {ok && <p style={{ color: 'green' }}>{ok}</p>}

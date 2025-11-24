@@ -6,6 +6,13 @@ from flask_cors import CORS
 from db import init_db
 from dotenv import load_dotenv
 
+
+def create_app():
+    app = Flask(__name__)
+    # ... 其他初始化
+    app.register_blueprint(trending_bp)
+    return app
+
 def create_app():
     app = Flask(__name__)
     # Load environment variables from backend/.env explicitly
@@ -24,11 +31,12 @@ def create_app():
     from routes.search_proxy import bp as search_bp
     from routes.discovery_proxy import bp as discover_bp
     from routes.user import bp as user_bp
+    from routes.trending import bp as trending_bp
 
     app.register_blueprint(search_bp)
     app.register_blueprint(discover_bp)
     app.register_blueprint(user_bp)
-
+    app.register_blueprint(trending_bp)
 
     return app
 

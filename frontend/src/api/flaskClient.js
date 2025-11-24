@@ -136,20 +136,6 @@ export function discoverMedia({
 
 
 
-
-/* ------------------------ Future API placeholders ------------------------ */
-
-// Trending media (/api/trending)
-export function getTrending({ type = 'movie', window = 'day', signal } = {}) {
-  return request('/trending', { params: { type, window }, signal });
-}
-
-// Detailed info (/api/details)
-export function getDetails({ type = 'movie', id, language = 'en-US', signal } = {}) {
-  if (!id) throw new Error('id is required');
-  return request('/details', { params: { type, id, language }, signal });
-}
-
 // Favorites (/api/favorites) – Firebase integration later
 export function listFavorites({ idToken, signal } = {}) {
   return request('/favorites', { idToken, signal });
@@ -190,4 +176,27 @@ export function getAlerts({ idToken } = {}) {
 
 export function updateAlerts({ frequency, keywords, channels, idToken }) {
   return request('/alerts', { method: 'PUT', body: { frequency, keywords, channels }, idToken });
+}
+
+
+/* --------------------------- Trending API --------------------------- */
+/**
+ * Get trending media from backend.
+ * type: 'all' | 'movie' | 'tv'
+ * window: 'day' | 'week'
+ * language: TMDb language code, e.g. 'en-US', 'zh-CN'
+ * region: TMDb region code, e.g. 'US', 'CN'
+ */
+export function getTrending({
+  type = 'movie',
+  window = 'day',
+  page = 1,
+  language = 'en-US',
+  region = 'US',
+  signal,
+} = {}) {
+  return request('/trending', {
+    params: { type, window, page, language, region },
+    signal,
+  });
 }

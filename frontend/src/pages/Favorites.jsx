@@ -29,7 +29,7 @@ export default function Favorites() {
   if (!user) return <div style={{ padding: 24 }}>Please login first.</div>;
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="container" style={{ padding: 24 }}>
       <h2>Favorites</h2>
       {err && <p style={{ color: 'red' }}>{err}</p>}
       {!items.length && <p>No favorites yet.</p>}

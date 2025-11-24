@@ -37,7 +37,7 @@ export default function Profile() {
   if (!profile) return <div style={{ padding: 24 }}>Loading profile...</div>;
 
   return (
-    <div style={{ padding: 24, maxWidth: 500 }}>
+    <div className="container" style={{ padding: 24, maxWidth: 500 }}>
       <h2>Profile</h2>
       {err && <p style={{ color: 'red' }}>{err}</p>}
       {ok && <p style={{ color: 'green' }}>{ok}</p>}

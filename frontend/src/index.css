@@ -1,68 +1,435 @@
+/* =========================================
+   Global tokens / 全局设计变量
+   ========================================= */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* colors */
+  --bg-body: #f5f7fa;
+  --bg-surface: #ffffff;
+  --bg-surface-alt: #f0f2f5;
+  --border-subtle: #e1e4eb;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --text-link: #4f46e5;
+  --text-link-hover: #4338ca;
+  --accent: #4f46e5;
+  --accent-soft: rgba(79, 70, 229, 0.08);
+  --danger: #dc2626;
+  --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
+
+  /* layout */
+  --page-max-width: 1400px;
+  --page-padding-x: 24px;
+  --page-padding-y: 24px;
+
+  /* misc */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  color: var(--text-main);
+  background-color: var(--bg-body);
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* =========================================
+   Reset / 基础 reset
+   ========================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+}
+
+/* root 容器占满宽度 */
+#root {
+  width: 100%;
   min-height: 100vh;
+  background-color: var(--bg-body);
+}
+
+/* =========================================
+   Typography / 文本
+   ========================================= */
+
+body {
+  color: var(--text-main);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2rem;
 }
+
+h2 {
+  font-size: 1.6rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0 0 0.5rem;
+}
+
+/* 链接 */
+a {
+  color: var(--text-link);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--text-link-hover);
+  text-decoration: underline;
+}
+
+/* =========================================
+   Layout helpers / 布局辅助
+   ========================================= */
+
+/* 顶部导航占位：如果 Nav 用 fixed，则主内容可以用这个加上内边距 */
+.app-shell {
+  padding-top: 60px; /* 与导航高度保持一致 */
+}
+
+/* TMDB 风格居中内容区 */
+.container {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding-x);
+}
+
+/* 页面内边距 */
+.page {
+  padding: var(--page-padding-y) 0;
+}
+
+/* 页面头部（标题 + 控件） */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* 控件区（筛选、搜索等） */
+.page-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+/* section 之间间距 */
+.section-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* =========================================
+   Nav / 顶部导航栏
+   ========================================= */
+
+/* 你可以在 Nav.jsx 里给最外层 div 加 className="nav-bar" */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
+}
+
+.nav-inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 var(--page-padding-x);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+
+.nav-links a {
+  color: var(--text-main);
+  font-weight: 500;
+}
+.nav-links a:hover {
+  color: var(--text-link);
+}
+
+.nav-spacer {
+  margin-left: auto;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* =========================================
+   Forms / 表单控件
+   ========================================= */
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.input,
+select,
+textarea {
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  padding: 6px 10px;
+  background-color: #fff;
+  min-width: 0;
+}
+
+.input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* =========================================
+   Buttons / 按钮
+   ========================================= */
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.btn {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #f3f4f6;
+  color: var(--text-main);
+  transition: background-color 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.05s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* 主要操作按钮 */
+.btn-primary {
+  background-color: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--text-link-hover);
+}
+
+/* 透明按钮，用于导航里 logout 等 */
+.btn-ghost {
+  background-color: transparent;
+  border-color: var(--border-subtle);
+}
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--accent-soft);
+}
+
+/* =========================================
+   Media grid / 影片网格布局（Search / Trending / Favorites 共用）
+   ========================================= */
+
+.grid-media {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* 如果你需要稍微更紧凑的布局，可以额外用这个类覆盖 */
+.grid-media.tight {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+/* =========================================
+   Media card / 影片卡片（MovieCard 可用）
+   ========================================= */
+
+/*
+  建议在 MovieCard 外层 div 加 className="media-card"
+  内层文字区域加 className="media-card-body"
+*/
+.media-card {
+  background-color: var(--bg-surface);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.media-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.media-card-body {
+  padding: 10px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.media-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.media-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.media-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+/* 用在 “Save Favorite” 这种按钮上 */
+.media-actions {
+  margin-top: 8px;
+}
+
+/* =========================================
+   Chips / 标签、pill
+   ========================================= */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  background-color: #fff;
+  color: var(--text-muted);
+}
+
+.pill-active {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* =========================================
+   Alerts, error, empty state / 提示
+   ========================================= */
+
+.text-muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.empty-state {
+  padding: 24px 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* =========================================
+   Responsive / 响应式细节
+   ========================================= */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 0;
   }
-  a:hover {
-    color: #747bff;
+
+  .container {
+    padding: 0 16px;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .nav-inner {
+    padding: 0 16px;
+  }
+
+  .page-header {
+    align-items: flex-start;
   }
 }
