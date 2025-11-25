@@ -8,6 +8,7 @@ import Alerts from './pages/Alerts.jsx';
 import Favorites from './pages/Favorites.jsx';
 import Nav from './components/Nav.jsx';
 import Trending from './pages/Trending.jsx';
+import Detail from './pages/Detail.jsx';
 
 export default function AppRouter() {
   return (
@@ -21,6 +22,7 @@ export default function AppRouter() {
             <Route path="/trending" element={<Trending />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path="/detail/:mediaType/:tmdbId" element={<Detail />} />
             <Route path="/favorites" element={<Favorites />} />
           </Routes>
         </div>

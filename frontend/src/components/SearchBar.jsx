@@ -1,4 +1,6 @@
 // frontend/src/components/SearchBar.jsx
+import "./SearchBar.css";
+
 export default function SearchBar({ onSearch }) {
   function handleSubmit(e) {
     e.preventDefault();
@@ -6,11 +8,26 @@ export default function SearchBar({ onSearch }) {
     const year = e.target.elements.year.value.trim();
     onSearch({ query: q, year: year || undefined });
   }
+
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-      <input name="query" placeholder="Search movies or TV..." />
-      <input name="year" placeholder="Year (optional)" style={{ width: 120 }} />
-      <button type="submit">Search</button>
+    <form className="tmdb-searchbar" onSubmit={handleSubmit}>
+      <div className="tmdb-input-wrapper">
+        <input
+          name="query"
+          placeholder="Search for a movie or TV show..."
+          className="tmdb-input"
+        />
+      </div>
+
+      <input
+        name="year"
+        placeholder="Year"
+        className="tmdb-input year-input"
+      />
+
+      <button type="submit" className="tmdb-btn">
+        Search
+      </button>
     </form>
   );
 }

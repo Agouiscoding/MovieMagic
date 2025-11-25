@@ -1,0 +1,131 @@
+/* ===== Top nav bar (TMDB-like) ===== */
+
+.nav-bar {
+  position: sticky;          /* stays at top */
+  top: 0;
+  z-index: 50;
+  background-color: #032541; /* TMDB dark blue */
+  color: #f9fafb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo area */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.nav-logo-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background-color: #01b4e4;     /* TMDB cyan */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #032541;
+}
+
+.nav-logo-text {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+/* Links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 14px;
+  margin-left: 12px;
+}
+
+.nav-link {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+/* Active underline */
+.nav-link-active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  border-radius: 999px;
+  background-color: #01b4e4; /* cyan underline */
+}
+
+/* Spacer pushes user section to the right */
+.nav-spacer {
+  flex: 1;
+}
+
+/* User area */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.nav-user-email {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #cbd5f5;
+}
+
+/* Auth link */
+.nav-link-auth {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.nav-link-auth:hover {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* Reuse your .btn but tweak for nav ghost button if needed */
+.nav-signout {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: transparent;
+  color: #e5e7eb;
+}
+
+.nav-signout:hover {
+  background-color: rgba(15, 23, 42, 0.6);
+  border-color: #01b4e4;
+}

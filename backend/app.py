@@ -32,11 +32,15 @@ def create_app():
     from routes.discovery_proxy import bp as discover_bp
     from routes.user import bp as user_bp
     from routes.trending import bp as trending_bp
+    from routes.details import bp as details_bp
+    from routes.media import bp as media_bp
 
     app.register_blueprint(search_bp)
     app.register_blueprint(discover_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(trending_bp)
+    app.register_blueprint(details_bp)
+    app.register_blueprint(media_bp)
 
     return app
 

@@ -200,3 +200,25 @@ export function getTrending({
     signal,
   });
 }
+
+/* --------------------------- Details API --------------------------- */
+/**
+ * Get detailed info for a single movie or TV show.
+ * mediaType: 'movie' | 'tv'
+ * tmdbId: number or string
+ */
+export function getDetails({ mediaType, tmdbId, language = 'en-US', signal } = {}) {
+  return request('/details', {
+    params: { type: mediaType, id: tmdbId, language },
+    signal,
+  });
+}
+
+
+/* --------------------------- Media API --------------------------- */
+export async function getMedia({ type, id }) {
+  const r = await fetch(`/api/media?type=${type}&id=${id}`);
+  if (!r.ok) throw new Error("Failed to load media");
+  return await r.json();
+}
+
