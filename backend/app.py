@@ -34,6 +34,7 @@ def create_app():
     from routes.trending import bp as trending_bp
     from routes.details import bp as details_bp
     from routes.media import bp as media_bp
+    from routes.comments import bp as comments_bp
 
     app.register_blueprint(search_bp)
     app.register_blueprint(discover_bp)
@@ -41,6 +42,7 @@ def create_app():
     app.register_blueprint(trending_bp)
     app.register_blueprint(details_bp)
     app.register_blueprint(media_bp)
+    app.register_blueprint(comments_bp)
 
     return app
 

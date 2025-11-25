@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDetails, getMedia } from '../api/flaskClient';
+import { useAuth } from '../auth/AuthProvider.jsx';
+import { fetchComments, addComment } from '../api/flaskClient';
+
 
 export default function Detail() {
   const { mediaType, tmdbId } = useParams(); // /detail/:mediaType/:tmdbId
@@ -9,6 +12,15 @@ export default function Detail() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
+
+  // Auth 
+  const { user, idToken } = useAuth();
+  // Comments
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [commentsError, setCommentsError] = useState('');
+  const [newComment, setNewComment] = useState('');
+
 
   // Media: trailers + images
   const [trailers, setTrailers] = useState([]);
@@ -18,6 +30,54 @@ export default function Detail() {
   // Pagination for media
   const [trailerPage, setTrailerPage] = useState(1); // 1-based
   const [imagePage, setImagePage] = useState(1);     // 1-based
+
+    useEffect(() => {
+    let aborted = false;
+
+    async function loadComments() {
+      setCommentsLoading(true);
+      setCommentsError('');
+      try {
+        const list = await fetchComments({
+          media_type: mediaType,
+          tmdb_id: tmdbId,
+        });
+        if (!aborted) setComments(list || []);
+      } catch (e) {
+        if (!aborted) setCommentsError(e.message || 'Failed to load comments');
+      } finally {
+        if (!aborted) setCommentsLoading(false);
+      }
+    }
+
+    loadComments();
+    return () => {
+      aborted = true;
+    };
+  }, [mediaType, tmdbId]);
+
+  async function handleSubmitComment(e) {
+    e.preventDefault();
+    if (!user || !idToken) return;
+    const content = newComment.trim();
+    if (!content) return;
+
+    try {
+      const created = await addComment({
+        media_type: mediaType,
+        tmdb_id: tmdbId,
+        content,
+        idToken,
+      });
+      // Prepend new comment
+      setComments((prev) => [created, ...prev]);
+      setNewComment('');
+    } catch (e) {
+      alert(e.message || 'Failed to add comment');
+    }
+  }
+
+
 
   useEffect(() => {
     let aborted = false;
@@ -409,6 +469,68 @@ export default function Detail() {
                   </p>
                 )}
             </section>
+          {/* Comments section */}
+            <section className="detail-section">
+              <h2 className="detail-section-title">Comments</h2>
+
+              {/* Write comment */}
+              {user ? (
+                <form className="comment-form" onSubmit={handleSubmitComment}>
+                  <textarea
+                    className="comment-textarea"
+                    placeholder="Share your thoughts about this title..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    rows={3}
+                  />
+                  <div className="comment-actions">
+                    <button
+                      type="submit"
+                      className="btn"
+                      disabled={!newComment.trim()}
+                    >
+                      Post Comment
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <p style={{ fontSize: 14, color: '#9ca3af' }}>
+                  Please sign in to post a comment.
+                </p>
+              )}
+
+              {/* Comment list */}
+              <div className="comment-list">
+                {commentsLoading && <p>Loading comments…</p>}
+                {commentsError && (
+                  <p style={{ color: 'salmon', fontSize: 13 }}>{commentsError}</p>
+                )}
+
+                {!commentsLoading && !commentsError && comments.length === 0 && (
+                  <p style={{ fontSize: 14, color: '#9ca3af' }}>
+                    No comments yet. Be the first one to comment!
+                  </p>
+                )}
+
+                {comments.map((c) => (
+                  <div key={c.id} className="comment-item">
+                    <div className="comment-header">
+                      <span className="comment-author">
+                        {c.author_name || 'User'}
+                      </span>
+                      {c.created_at && (
+                        <span className="comment-time">
+                          {new Date(c.created_at).toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                    <p className="comment-content">{c.content}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            
           </div>
 
           {/* Right sidebar */}
@@ -480,7 +602,10 @@ export default function Detail() {
                 </ul>
               )}
             </section>
+      
+
             
+
           </aside>
         </div>
       </div>

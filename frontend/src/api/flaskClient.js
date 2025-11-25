@@ -222,3 +222,41 @@ export async function getMedia({ type, id }) {
   return await r.json();
 }
 
+
+
+/* --------------------------- Comments API --------------------------- */
+// frontend/src/api/flaskClient.js
+
+// List comments for one movie/tv
+export async function fetchComments({ media_type, tmdb_id }) {
+  const params = new URLSearchParams({
+    media_type,
+    tmdb_id: String(tmdb_id),
+  });
+  const r = await fetch(`/api/comments?${params.toString()}`);
+  if (!r.ok) throw new Error("Failed to load comments");
+  return await r.json();
+}
+
+// Add a new comment (requires idToken)
+export async function addComment({ media_type, tmdb_id, content, idToken }) {
+  const r = await fetch("/api/comments", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify({
+      media_type,
+      tmdb_id,
+      content,
+    }),
+  });
+
+  if (!r.ok) {
+    const data = await r.json().catch(() => ({}));
+    throw new Error(data.error || "Failed to add comment");
+  }
+
+  return await r.json();
+}
